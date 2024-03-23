@@ -79,7 +79,7 @@ export default async (req: any, res: any) => {
       if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
       // if (interceptedRequest.url().includes('.vtt')) finalResponse.subtitle.push(interceptedRequest.url());
       if (interceptedRequest.url().includes('.vtt')) {
-        const subtitleArray:any = { lang: interceptedRequest.url().split('/').pop(), url: interceptedRequest.url() };
+        const subtitleArray:any = { lang: interceptedRequest.url().split('/').pop().replace(".vtt", ""), url: interceptedRequest.url() };
         finalResponse.subtitle.push(subtitleArray);
       };
       interceptedRequest.continue();
