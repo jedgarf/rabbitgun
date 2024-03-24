@@ -76,7 +76,7 @@ export default async (req: any, res: any) => {
   const finalResponse:{source:string,subtitle:string[]} = {source:'',subtitle:[]}
   
   page.on('request', async (interceptedRequest) => {
-    console.log("[LOG]", interceptedRequest);
+    console.log("[LOG]", interceptedRequest.url());
     await (async () => {
       logger.push(interceptedRequest.url());
       if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
