@@ -71,13 +71,17 @@ export default async (req: any, res: any) => {
   await page.setExtraHTTPHeaders({ 'Referer': 'https://flixhq.to/' });
   
   const logger:string[] = [];
-  const finalResponse:{source:string,subtitle:string[]} = {source:'',subtitle:[]}
+  const finalResponse:{source:string[],subtitle:string[]} = {source:[],subtitle:[]}
   
   page.on('request', async (interceptedRequest) => {
     console.log("[LOG]", interceptedRequest.url());
     await (async () => {
       logger.push(interceptedRequest.url());
-      if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
+      // if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
+      if (interceptedRequest.url().includes('.m3u8')) {
+        const sourceArray:any = { quality: "auto", url: interceptedRequest.url() };
+        finalResponse.source.push(sourceArray);
+      };
       // if (interceptedRequest.url().includes('.vtt')) finalResponse.subtitle.push(interceptedRequest.url());
       if (interceptedRequest.url().includes('.vtt')) {
         const subtitleArray:any = { lang: interceptedRequest.url().split('/').pop().replace(".vtt", ""), url: interceptedRequest.url() };
