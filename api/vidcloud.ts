@@ -29,7 +29,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
 
 export default async (req: any, res: any) => {
-  let {body,method} = req
+  let {body,query,method} = req
 
   // Some header shits
   if (method !== 'POST') {
@@ -44,10 +44,11 @@ export default async (req: any, res: any) => {
   }
 
   // Some checks...
-  if (!body) return res.status(400).end(`No body provided`)
-  if (typeof body === 'object' && !body.id) return res.status(400).end(`No url provided`)
+  // if (!body) return res.status(400).end(`No body provided`)
+  // if (typeof body === 'object' && !body.id) return res.status(400).end(`No url provided`)
   
-  const id = body.id;
+  // const id = body.id;
+  const id = query.id;
   const isProd = process.env.NODE_ENV === 'production'
 
   // create browser based on ENV
