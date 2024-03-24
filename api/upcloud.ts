@@ -29,6 +29,13 @@ puppeteer.use(StealthPlugin())
 export default async (req: any, res: any) => {
   let {body,method} = req
 
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+  
   // Some header shits
   if (method !== 'POST') {
     res.setHeader('Access-Control-Allow-Credentials', true)
