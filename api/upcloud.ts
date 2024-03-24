@@ -105,7 +105,7 @@ export default async (req: any, res: any) => {
   res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate')
   res.setHeader('Content-Type', 'application/json')
   // CORS
-  // res.setHeader('Access-Control-Allow-Headers', '*')
+  res.setHeader('Access-Control-Allow-Headers', '*')
   res.setHeader('Access-Control-Allow-Credentials', true)
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
