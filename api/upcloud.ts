@@ -125,8 +125,8 @@ export default async (req: any, res: any) => {
       const text = await interceptedResponse.json();
       const sources = JSON.parse(JSON.stringify(text));
       // console.log(sources.tracks);
-      finalResponse.subtitles.push(sources.tracks);
-
+      // finalResponse.subtitles.push(sources.tracks);
+      finalResponse.subtitles = sources.tracks;
     }
   });
 
