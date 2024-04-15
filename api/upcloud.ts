@@ -103,12 +103,16 @@ export default async (req: any, res: any) => {
   }
 
   const logger: string[] = [];
-  const finalResponse: { source: string, subtitle: ISubtile[] } = { source: '', subtitle: [] }
+  const finalResponse: { sources: string[], subtitle: ISubtile[] } = { sources: [], subtitle: [] }
   let urlSub;
   page.on('request', async (interceptedRequest) => {
     await (async () => {
       logger.push(interceptedRequest.url());
-      if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
+      // if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
+      if (interceptedRequest.url().includes('.m3u8')) {
+        const sourceArray:any = { quality: "auto", url: interceptedRequest.url() };
+        finalResponse.sources.push(sourceArray);
+      };
       //if (interceptedRequest.url().includes('getSource')) finalResponse.subtitle.push(interceptedRequest.url());
       interceptedRequest.continue();
     })();
@@ -117,10 +121,10 @@ export default async (req: any, res: any) => {
   page.on('response', async (interceptedResponse) => {
     if (interceptedResponse.url().includes('getSources')) {
       urlSub = interceptedResponse.url();
-      console.log(urlSub)
+      // console.log(urlSub)
       const text = await interceptedResponse.json();
       const sources = JSON.parse(JSON.stringify(text));
-      console.log(sources.tracks);
+      // console.log(sources.tracks);
       finalResponse.subtitle.push(sources.tracks);
 
     }

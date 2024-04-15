@@ -72,11 +72,44 @@ export default async (req: any, res: any) => {
   // Set headers,else wont work.
   await page.setExtraHTTPHeaders({ 'Referer': 'https://flixhq.to/' });
   
-  const logger:string[] = [];
-  const finalResponse:{sources:string[],subtitles:string[]} = {sources:[],subtitles:[]}
+  // ======================================== New ======================================================
+
+  // const logger:string[] = [];
+  // const finalResponse:{sources:string[],subtitles:string[]} = {sources:[],subtitles:[]}
   
+  // page.on('request', async (interceptedRequest) => {
+  //   console.log("[LOG]", interceptedRequest.url());
+  //   await (async () => {
+  //     logger.push(interceptedRequest.url());
+  //     // if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
+  //     if (interceptedRequest.url().includes('.m3u8')) {
+  //       const sourceArray:any = { quality: "auto", url: interceptedRequest.url() };
+  //       finalResponse.sources.push(sourceArray);
+  //     };
+  //     // if (interceptedRequest.url().includes('.vtt')) finalResponse.subtitle.push(interceptedRequest.url());
+  //     if (interceptedRequest.url().includes('.vtt')) {
+  //       const subtitleArray:any = { lang: interceptedRequest.url().split('/').pop().replace(".vtt", ""), url: interceptedRequest.url() };
+  //       finalResponse.subtitles.push(subtitleArray);
+  //     };
+  //     interceptedRequest.continue();
+  //   })();
+  // });
+
+  // ===================================================================================================
+
+  // ======================================== New ======================================================
+
+  interface ISubtile {
+    file: string,
+    label: string,
+    kind: string,
+    default?: boolean,
+  }
+
+  const logger: string[] = [];
+  const finalResponse: { sources: string[], subtitle: ISubtile[] } = { sources: [], subtitle: [] }
+  let urlSub;
   page.on('request', async (interceptedRequest) => {
-    console.log("[LOG]", interceptedRequest.url());
     await (async () => {
       logger.push(interceptedRequest.url());
       // if (interceptedRequest.url().includes('.m3u8')) finalResponse.source = interceptedRequest.url();
@@ -84,14 +117,24 @@ export default async (req: any, res: any) => {
         const sourceArray:any = { quality: "auto", url: interceptedRequest.url() };
         finalResponse.sources.push(sourceArray);
       };
-      // if (interceptedRequest.url().includes('.vtt')) finalResponse.subtitle.push(interceptedRequest.url());
-      if (interceptedRequest.url().includes('.vtt')) {
-        const subtitleArray:any = { lang: interceptedRequest.url().split('/').pop().replace(".vtt", ""), url: interceptedRequest.url() };
-        finalResponse.subtitles.push(subtitleArray);
-      };
+      //if (interceptedRequest.url().includes('getSource')) finalResponse.subtitle.push(interceptedRequest.url());
       interceptedRequest.continue();
     })();
   });
+
+  page.on('response', async (interceptedResponse) => {
+    if (interceptedResponse.url().includes('getSources')) {
+      urlSub = interceptedResponse.url();
+      // console.log(urlSub)
+      const text = await interceptedResponse.json();
+      const sources = JSON.parse(JSON.stringify(text));
+      // console.log(sources.tracks);
+      finalResponse.subtitle.push(sources.tracks);
+
+    }
+  });
+
+  // ===================================================================================================
   
   try {
     const [req] = await Promise.all([
