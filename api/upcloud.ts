@@ -103,7 +103,7 @@ export default async (req: any, res: any) => {
   }
 
   const logger: string[] = [];
-  const finalResponse: { sources: string[], subtitle: ISubtile[] } = { sources: [], subtitle: [] }
+  const finalResponse: { sources: string[], subtitles: ISubtile[] } = { sources: [], subtitles: [] }
   let urlSub;
   page.on('request', async (interceptedRequest) => {
     await (async () => {
@@ -125,7 +125,7 @@ export default async (req: any, res: any) => {
       const text = await interceptedResponse.json();
       const sources = JSON.parse(JSON.stringify(text));
       // console.log(sources.tracks);
-      finalResponse.subtitle.push(sources.tracks);
+      finalResponse.subtitles.push(sources.tracks);
 
     }
   });
